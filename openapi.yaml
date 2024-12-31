@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: Robot Cleaning Service API
+  description: API for managing and processing robot cleaning commands.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+
+paths:
+  /tibber-developer-test/enter-path:
+    post:
+      summary: Process robot cleaning commands
+      description: Accepts a starting position and a list of movement commands to calculate the number of unique positions visited.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start:
+                  type: object
+                  properties:
+                    x:
+                      type: integer
+                      minimum: -100000
+                      maximum: 100000
+                      description: X-coordinate of the starting position
+                    y:
+                      type: integer
+                      minimum: -100000
+                      maximum: 100000
+                      description: Y-coordinate of the starting position
+                  required:
+                    - x
+                    - y
+                commmands:
+                  type: array
+                  maxItems: 10000
+                  items:
+                    type: object
+                    properties:
+                      direction:
+                        type: string
+                        enum:
+                          - north
+                          - south
+                          - east
+                          - west
+                        description: Direction of movement
+                      steps:
+                        type: integer
+                        minimum: 0
+                        description: Number of steps to move in the given direction
+                    required:
+                      - direction
+                      - steps
+              required:
+                - start
+                - commmands
+      responses:
+        '201':
+          description: Successfully processed the commands
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: integer
+                    description: Number of unique positions visited
+                  commands:
+                    type: integer
+                    description: Number of commands processed
+                  duration:
+                    type: number
+                    format: float
+                    description: Time taken to process the commands (in seconds)
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: Time the execution was recorded in the database
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message detailing the validation issue
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message detailing the server issue
