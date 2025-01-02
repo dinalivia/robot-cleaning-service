@@ -86,3 +86,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
         data = json.loads(response.data)
         self.assertIn("result", data)
         self.assertEqual(data["result"], 3)
+
+
+if __name__ == "__main__":
+    unittest.main()

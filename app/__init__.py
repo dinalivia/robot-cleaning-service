@@ -4,9 +4,11 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 
 def create_app(db_instance):
-    load_dotenv()  # Load environment variables from .env file
+
     app = Flask(__name__)
     app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv(
         "DATABASE_URI", "postgresql://user:password@db:5432/robot_service"

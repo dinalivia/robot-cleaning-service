@@ -12,6 +12,11 @@ logger = logging.getLogger("RobotCleaningService")
 app = create_app(db)
 
 
+@app.route("/health", methods=["GET"])
+def health():
+    return jsonify({"status": "healthy"}), 200
+
+
 @app.route("/tibber-developer-test/get-all-records", methods=["GET"])
 def get_all_records():
     executions = Execution.query.all()

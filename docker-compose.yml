@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   app:
+    container_name: robot-cleaning-service-app
     build: .
     ports:
       - "5000:5000"
@@ -15,6 +16,11 @@ services:
         condition: service_healthy  # Wait until db service is healthy
     command: >
       sh -c "flask db upgrade && flask run --host=0.0.0.0 --port=5000"
+    healthcheck:  # Add a health check for the app
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   db:
     image: postgres:13

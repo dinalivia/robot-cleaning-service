@@ -13,9 +13,9 @@ def add_execution(db, commands_count, result, duration):
         raise Exception(f"Database error: {str(e)}")
 
 
-def get_first_execution(db):
+def get_all_executions():
     try:
-        return Execution.query.first()
+        return Execution.query.limit(100).all()
     except SQLAlchemyError as e:
         raise Exception(f"Database error: {str(e)}")
 

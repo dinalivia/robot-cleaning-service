@@ -89,3 +89,7 @@ class TestExecuteCommands(unittest.TestCase):
         result, duration = execute_commands(commands, x, y)
         self.assertEqual(result, 400)
         self.assertIsNotNone(duration)
+
+
+if __name__ == "__main__":
+    unittest.main()
