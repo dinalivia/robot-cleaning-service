@@ -30,7 +30,7 @@ To run this project, ensure you have the following:
 
 4. Build the Docker containers:
    ```bash
-   docker-compose build
+   make build
    ```
 
 ## Running the Project
@@ -39,7 +39,7 @@ To start the service:
 
 1. **Run with Docker Compose**:
    ```bash
-   docker-compose up
+   make up
    ```
 
 2. **Access the API**:
@@ -83,9 +83,12 @@ Run E2E tests with:
 make e2e-tests
 ```
 
+### 4. Check code coverage
+Run:
+```bash
+make test-coverage
+```
+
 ## Additional Information
 - **Logs**: The service uses structured logging for better debugging.
-- **Code Coverage**: Code coverage is tracked during unit tests and can be checked via `coverage report`.
-- **Deployment**: This service is ready for deployment in serverless environments like AWS Lambda.
-
-Feel free to contribute or raise issues if you encounter any problems!
+- **Code performance analysis**: run e2e tests locally to check the code time complexity. The test suite plots a graph of commands x execution time. The graph is stored at `app/duration_vs_commands_steps.png`
