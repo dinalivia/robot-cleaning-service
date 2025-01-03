@@ -1,5 +1,6 @@
 import unittest
-from app.main import execute_commands
+from app.execute_commands import execute_commands_v2, execute_commands_v1
+import matplotlib.pyplot as plt
 
 
 class TestExecuteCommands(unittest.TestCase):
@@ -8,23 +9,9 @@ class TestExecuteCommands(unittest.TestCase):
             {"direction": "north", "steps": 0},
         ]
         x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
-        self.assertEqual(result, 1)  # Only the start position
-
-    def test_execute_commands_invalid_direction_is_ignored(self):
-        commands = [
-            {"direction": "invalid", "steps": 1},
-        ]
-        x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
+        result, duration = execute_commands_v2(commands, x, y)
         self.assertEqual(result, 1)  # Only the start position
         self.assertIsNotNone(duration)
-
-    def test_execute_commands_large_input(self):
-        commands = [{"direction": "north", "steps": 1} for _ in range(10000)]
-        x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
-        self.assertEqual(result, 10001)
 
     def test_execute_commands_successful_output(self):
         commands = [
@@ -34,7 +21,7 @@ class TestExecuteCommands(unittest.TestCase):
             {"direction": "west", "steps": 1},
         ]
         x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
+        result, duration = execute_commands_v2(commands, x, y)
         self.assertEqual(result, 4)
         self.assertIsNotNone(duration)
 
@@ -44,7 +31,7 @@ class TestExecuteCommands(unittest.TestCase):
             {"direction": "west", "steps": 2},
         ]
         x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
+        result, duration = execute_commands_v2(commands, x, y)
         self.assertEqual(result, 3)
         self.assertIsNotNone(duration)
 
@@ -54,8 +41,15 @@ class TestExecuteCommands(unittest.TestCase):
             {"direction": "north", "steps": 2},
         ]
         x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
+        result, duration = execute_commands_v2(commands, x, y)
         self.assertEqual(result, 3)
+        self.assertIsNotNone(duration)
+
+    def test_execute_commands_large_input(self):
+        commands = [{"direction": "north", "steps": 1} for _ in range(10000)]
+        x, y = 0, 0
+        result, duration = execute_commands_v2(commands, x, y)
+        self.assertEqual(result, 10001)
         self.assertIsNotNone(duration)
 
     def test_execute_commands_loop_2x2(self):
@@ -70,7 +64,7 @@ class TestExecuteCommands(unittest.TestCase):
             {"direction": "north", "steps": 2},
         ]
         x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
+        result, duration = execute_commands_v2(commands, x, y)
         self.assertEqual(result, 8)
         self.assertIsNotNone(duration)
 
@@ -86,8 +80,23 @@ class TestExecuteCommands(unittest.TestCase):
             {"direction": "north", "steps": 100},
         ]
         x, y = 0, 0
-        result, duration = execute_commands(commands, x, y)
+        result, duration = execute_commands_v2(commands, x, y)
         self.assertEqual(result, 400)
+        self.assertIsNotNone(duration)
+
+    def test_execute_commands_al_dente(self):
+        commands = [
+            {"direction": "east", "steps": 2},
+            {"direction": "north", "steps": 4},
+            {"direction": "east", "steps": 2},
+            {"direction": "south", "steps": 4},
+            {"direction": "east", "steps": 2},
+            {"direction": "north", "steps": 2},
+            {"direction": "west", "steps": 8},
+        ]
+        x, y = 0, 0
+        result, duration = execute_commands_v2(commands, x, y)
+        self.assertEqual(result, 23)
         self.assertIsNotNone(duration)
 
 

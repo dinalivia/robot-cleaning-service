@@ -36,7 +36,6 @@ class TestEnterPathE2E(unittest.TestCase):
         plt.title("Relationship Between Duration and Commands+Steps")
         plt.xlabel("Commands + Steps")
         plt.ylabel("Execution Duration (s)")
-        plt.legend()
         plt.grid()
 
         for size in range(100):

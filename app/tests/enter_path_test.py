@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from app.main import execute_commands, app
+from app.main import execute_commands_v2, app
 from flask import json
 
 
@@ -23,7 +23,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
         data = json.loads(response.data)
         self.assertIn("error", data)
 
-    @patch("app.main.execute_commands", side_effect=MemoryError)
+    @patch("app.main.execute_commands_v2", side_effect=MemoryError)
     def test_enter_path_memory_error(self, mock_execute_commands):
         payload = {
             "start": {"x": 0, "y": 0},

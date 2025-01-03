@@ -2,14 +2,17 @@ from flask import request, jsonify
 from flask_inputs import Inputs
 from flask_inputs.validators import JsonSchema
 from app import create_app, db
+from app.execute_commands import execute_commands_v2
 from app.models import Execution
-import time
 import logging
+
+# from app.db_queries import ExecutionQueryService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("RobotCleaningService")
 
 app = create_app(db)
+# db_service = ExecutionQueryService(db)
 
 
 @app.route("/health", methods=["GET"])
@@ -17,9 +20,12 @@ def health():
     return jsonify({"status": "healthy"}), 200
 
 
-@app.route("/tibber-developer-test/get-all-records", methods=["GET"])
-def get_all_records():
-    executions = Execution.query.all()
+@app.route("/tibber-developer-test/get-last-executions", methods=["GET"])
+def get_last_executions():
+    # for testing purposes
+    # executions = db_service.get_last_executions()
+    # executions = Execution.query.order_by(Execution.timestamp.desc()).limit(100).all()
+    executions = Execution.query.limit(100).all()
     return jsonify(
         [
             {
@@ -45,7 +51,9 @@ def enter_path():
         start = data["start"]
         commands = data["commmands"]
 
-        result, duration = execute_commands(commands, start["x"], start["y"])
+        result, duration = execute_commands_v2(commands, start["x"], start["y"])
+
+        # execution = db_service.add_execution(len(commands), result, duration)
 
         execution = Execution(commands=len(commands), result=result, duration=duration)
         db.session.add(execution)
@@ -70,33 +78,6 @@ def enter_path():
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
         return jsonify({"error": "Internal server error"}), 500
-
-
-def execute_commands(commands, x, y):
-    visited = set()
-    visited.add((x, y))
-
-    start_time = time.time()
-
-    for command in commands:  # O(c+s)
-        direction = command["direction"]
-        steps = command["steps"]
-
-        for _ in range(steps):
-            if direction == "north":
-                y += 1
-            elif direction == "south":
-                y -= 1
-            elif direction == "east":
-                x += 1
-            elif direction == "west":
-                x -= 1
-            visited.add((x, y))
-
-    duration = time.time() - start_time
-    logger.debug(f"Visited {len(visited)} unique cells in {duration} seconds")
-    logger.debug(f"Visited cells: {visited}")
-    return len(visited), duration
 
 
 class EnterPathInput(Inputs):

@@ -28,7 +28,7 @@ jobs:
 
     - name: Build and Run Docker Containers
       run: |
-        make up
+        make up-ci
 
     - name: Wait for Server to Be Ready
       run: |
