@@ -10,7 +10,7 @@ To run this project, ensure you have the following:
 - **Docker** (with Docker Compose)
 - **pip** for Python package management
 
-## Quick start the project
+## Quick start the project - with docker containers
 
 To run the service:
 
@@ -45,7 +45,35 @@ To run the service:
    }'
    ```
 
-## Setting Up the Project
+## Algorithm performance
+
+To process the input commands, I have developed 2 algorithms. 
+
+For the first algorithm (execute_commands_v1) I chose to use a `set` as the data structure to save the visited points, and the algorithm loops through each command and step given in the input. The time complexity of O(c*s), and space complexity of O(c*s), where `c` is the number of Commands and `s` the average number of steps per command. 
+
+For the version 2 of this implementation (execute_commands_v2), I created a class called `Line`, to save the visited locations as vertical and horizontal lines. The Line data scruture has 3 properties: a `constant`, a `start` and an `end`. (TODO: explain properties)
+After creating the lines for each command, the overlapping lines are merged and and the crossing positions (duplicated points) are calculated. Finally, the total amount of visited locations is returned by calculating the size of the final vertical and horizontal lines and subtracting the amount of crossing points.
+
+V2 é quadrádico ao numero de comandos 
+V1 é linear ao numero total de passos
+
+o quadradico do numero `max de comandos` é menor do que o num `max de comandos x max numero de passos` em uma ordem de grandeza.
+
+TODO:
+vantagem: linhas ao inves pontos para armazenados em memorias. num max Linhas (10k) = num max de commandos, já o num max de pontos (V1) é no max o max do num passos (100k) X num max do comandos(10k). 
+- linhas sao ordenadas, isso diminui a complexidade na hora de mergear os segments (remove overlappings)
+
+Casos extremos:
+- prox ao valor max dos steps, o algoritmo V2 tem uma clara performance superior ao algoritmo um
+- caso o numero de steps seja prox ou igual 1 e 
+
+
+<!-- The advantage of using lines instead of unique points (as in V1) is that I can process the distances (steps) and avoid a nested loop to process the input, reducing the time and space complexity on the average execution. -->
+
+To analyse both algorithms performance, I created a small benchmark 
+
+
+## Setting Up the Project 
 
 1. Clone the repository:
    ```bash

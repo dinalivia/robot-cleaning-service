@@ -6,13 +6,13 @@ from app.execute_commands import execute_commands_v2
 from app.models import Execution
 import logging
 
-# from app.db_queries import ExecutionQueryService
+from app.db_queries import ExecutionQueryService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("RobotCleaningService")
 
 app = create_app(db)
-# db_service = ExecutionQueryService(db)
+db_service = ExecutionQueryService(db)
 
 
 @app.route("/health", methods=["GET"])
@@ -23,9 +23,7 @@ def health():
 @app.route("/tibber-developer-test/get-last-executions", methods=["GET"])
 def get_last_executions():
     # for testing purposes
-    # executions = db_service.get_last_executions()
-    # executions = Execution.query.order_by(Execution.timestamp.desc()).limit(100).all()
-    executions = Execution.query.limit(100).all()
+    executions = db_service.get_last_executions()
     return jsonify(
         [
             {
@@ -53,9 +51,8 @@ def enter_path():
 
         result, duration = execute_commands_v2(commands, start["x"], start["y"])
 
-        # execution = db_service.add_execution(len(commands), result, duration)
+        execution = db_service.add_execution(len(commands), result, duration)
 
-        execution = Execution(commands=len(commands), result=result, duration=duration)
         db.session.add(execution)
         db.session.commit()
 

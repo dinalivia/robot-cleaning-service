@@ -2,13 +2,14 @@ from flask_inputs import Inputs
 from flask_inputs.validators import JsonSchema
 import time
 import logging
+from typing import List, Tuple, Dict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("RobotCleaningService")
 
 
 class Line:
-    def __init__(self, constant, start, end):
+    def __init__(self, constant: int, start: int, end: int):
         self.constant = constant
         self.start = start
         self.end = end
@@ -20,16 +21,35 @@ class Line:
             other.end,
         )
 
+    def __eq__(self, other):
+        if isinstance(other, Line):
+            return (
+                self.constant == other.constant
+                and self.start == other.start
+                and self.end == other.end
+            )
+        return False
+
     def __repr__(self):
         return f"Line(constant={self.constant}, start={self.start}, end={self.end})"
 
 
-def create_lines(x, y, commands):
+def create_lines(
+    x: int, y: int, commands: List[Dict[str, int]]
+) -> Tuple[List[Line], List[Line]]:
+    """
+    Generates horizontal and vertical lines based on a starting point and a list of movement commands.
+
+    Returns:
+        Tuple[List[Line], List[Line]]: A tuple containing two lists of Line objects. The first list contains
+                                       horizontal lines, and the second list contains vertical lines.
+    """
+
     horizontal_lines = []
     vertical_lines = []
     current_x, current_y = x, y
 
-    for command in commands:
+    for command in commands:  # O(c)
         direction = command["direction"]
         distance = command["steps"]
 
@@ -53,16 +73,22 @@ def create_lines(x, y, commands):
     return horizontal_lines, vertical_lines
 
 
-def merge_segments(lines):
+def merge_segments(lines: List[Line]) -> List[Line]:
+    """
+    Merges overlapping or contiguous line segments with the same constant value.
+
+    Returns:
+        List[Line]: A list of merged Line objects.
+    """
     lines.sort()  # O(nlogn)
-    normalized_lines = []
+    merged_lines = []
 
     for line in lines:  # O(n)
-        if not normalized_lines:
-            normalized_lines.append(line)
+        if not merged_lines:
+            merged_lines.append(line)
             continue
 
-        last_line = normalized_lines[-1]
+        last_line = merged_lines[-1]
         if last_line.constant == line.constant:
             if (line.start <= last_line.end and last_line.end <= line.end) or (
                 last_line.start <= line.end and line.end <= last_line.end
@@ -72,25 +98,27 @@ def merge_segments(lines):
                     min(last_line.start, line.start),
                     max(last_line.end, line.end),
                 )
-                normalized_lines[-1] = new_line
+                merged_lines[-1] = new_line
             else:
-                normalized_lines.append(line)
+                merged_lines.append(line)
         else:
-            normalized_lines.append(line)
+            merged_lines.append(line)
 
-    return normalized_lines
+    return merged_lines
 
 
-def count_points(lines):
+def count_points(lines: List[Line]) -> int:
     count = 0
     for line in lines:
         count += line.end - line.start + 1
     return count
 
 
-def calculate_crossings(vertical_lines, horizontal_lines):
+def calculate_crossings(
+    vertical_lines: List[Line], horizontal_lines: List[Line]
+) -> int:
     count = 0
-    for v_line in vertical_lines:
+    for v_line in vertical_lines:  # O(nˆ2)
         for h_line in horizontal_lines:
             if (v_line.start <= h_line.constant <= v_line.end) and (
                 h_line.start <= v_line.constant <= h_line.end
@@ -99,7 +127,26 @@ def calculate_crossings(vertical_lines, horizontal_lines):
     return count
 
 
-def execute_commands_v2(commands, x, y):
+def execute_commands_v2(
+    commands: List[Dict[str, int]], x: int, y: int
+) -> Tuple[int, float]:
+    """
+    Algorithm V2:
+    Executes a series of commands to move a robot and calculates the number of unique points visited.
+    time complexity: O(nlogn)
+    space complexity: O(n)
+
+    Args:
+        commands (List[Dict[str, int]]): A list of commands where each command is a dictionary
+                                         with direction and distance.
+        x (int): The starting x-coordinate of the robot.
+        y (int): The starting y-coordinate of the robot.
+
+    Returns:
+        Tuple[int, float]: A tuple containing the number of unique points visited and the
+                           duration of the execution in seconds.
+    """
+
     start_time = time.time()
 
     if not commands:
@@ -124,19 +171,27 @@ def execute_commands_v2(commands, x, y):
     return (horizontal_points + vertical_points - crossings), time.time() - start_time
 
 
-# explain my train of thought
-# attempting to reduce the time complexity of the function because it's a web service and the time complexity
-# would be O(commands x steps) which is not good
-# it's a synchronous function and it's not good to have a function that takes a lot of time to execute
-# I'm trying to reduce the time complexity of the function to O(nl) by creating lines and counting the points
-# why use a set an not a list?
-# because a set has O(1) complexity for the add operation
+def execute_commands_v1(
+    commands: List[Dict[str, int]], x: int, y: int
+) -> Tuple[int, float]:
+    """
+    Algorithm V1:
+    Executes a series of movement commands starting from a given position and
+    returns the number of unique cells visited and the duration of execution.
+    Time Complexity: O(commands x steps)
+    Space Complexity: O(commands x steps)
 
+    Args:
+        commands (List[Dict[str, int]]): A list of movement commands where each
+            command is a dictionary with 'direction' (str) and 'steps' (int).
+        x (int): The starting x-coordinate.
+        y (int): The starting y-coordinate.
 
-# split algorithm and controller
+    Returns:
+        Tuple[int, float]: A tuple containing the number of unique cells visited
+        and the duration of execution in seconds.
+    """
 
-
-def execute_commands_v1(commands, x, y):
     visited = set()
     visited.add((x, y))
 
