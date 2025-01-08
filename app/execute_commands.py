@@ -49,7 +49,7 @@ def create_lines(
     vertical_lines = []
     current_x, current_y = x, y
 
-    for command in commands:  # O(c)
+    for command in commands:  # O(n)
         direction = command["direction"]
         distance = command["steps"]
 

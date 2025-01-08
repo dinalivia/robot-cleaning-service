@@ -45,32 +45,38 @@ To run the service:
    }'
    ```
 
-## Algorithm performance
+## Algorithm overview
 
 To process the input commands, I have developed 2 algorithms. 
 
-For the first algorithm (execute_commands_v1) I chose to use a `set` as the data structure to save the visited points, and the algorithm loops through each command and step given in the input. The time complexity of O(c*s), and space complexity of O(c*s), where `c` is the number of Commands and `s` the average number of steps per command. 
+For the first algorithm (`execute_commands_v1`), I used a `set` to store the visited points (x, y). Using a set is advantageous over a list because it automatically handles duplicates, ensuring each point is unique. The algorithm processes each command and its steps sequentially, resulting in a time complexity of O(c * s) and a space complexity of O(c * s), where `c` is the number of commands and `s` is the average number of steps per command.
 
-For the version 2 of this implementation (execute_commands_v2), I created a class called `Line`, to save the visited locations as vertical and horizontal lines. The Line data scruture has 3 properties: a `constant`, a `start` and an `end`. (TODO: explain properties)
-After creating the lines for each command, the overlapping lines are merged and and the crossing positions (duplicated points) are calculated. Finally, the total amount of visited locations is returned by calculating the size of the final vertical and horizontal lines and subtracting the amount of crossing points.
+For the version 2 implementation (`execute_commands_v2`), I created a class called `Line` to store visited locations as vertical and horizontal lines. The `Line` data structure has three properties: `constant`, `start`, and `end`. For example, a vertical line from (0,0) to (0,4) is represented as `Line(constant=0, start=0, end=4)`.
 
-V2 é quadrádico ao numero de comandos 
-V1 é linear ao numero total de passos
+After creating lines for each command (O(c)), the overlapping lines are merged (O(c log(c))), and the crossing positions (duplicated points) are calculated (O(cˆ2)). Finally, the total number of visited locations is determined by calculating the size of the final vertical and horizontal lines and subtracting the number of crossing points.
 
-o quadradico do numero `max de comandos` é menor do que o num `max de comandos x max numero de passos` em uma ordem de grandeza.
+### Algorithms performances analysis
 
-TODO:
-vantagem: linhas ao inves pontos para armazenados em memorias. num max Linhas (10k) = num max de commandos, já o num max de pontos (V1) é no max o max do num passos (100k) X num max do comandos(10k). 
-- linhas sao ordenadas, isso diminui a complexidade na hora de mergear os segments (remove overlappings)
+#### Time complexity
 
-Casos extremos:
-- prox ao valor max dos steps, o algoritmo V2 tem uma clara performance superior ao algoritmo um
-- caso o numero de steps seja prox ou igual 1 e 
+The time complexity of the V1 implementation is linear with respect to the total number of steps multiplied by the total number of commands in the input. In contrast, the V2 implementation has a quadratic time complexity relative to the number of commands. Given the problem constraints, where `0 ≤ number of commands ≤ 10000` and `0 < steps < 100000`, the maximum number of commands squared (10000²) is significantly lower than the maximum number of commands multiplied by the maximum number of steps (10000 * 100000). Additionally, considering that in a realistic scenario the cleaning robot would likely operate in long lines, the V2 algorithm generally offers better performance.
 
+I conducted a benchmark by writing performance tests that increase the number of commands and steps. These tests are available in the `/tests/performance_tests` directory. The test suite generates graphs of steps versus execution time, which are stored in the `/images` folder.
 
-<!-- The advantage of using lines instead of unique points (as in V1) is that I can process the distances (steps) and avoid a nested loop to process the input, reducing the time and space complexity on the average execution. -->
+##### Realistic path
+The graph demonstrates that in realistic scenarios, the V2 algorithm is significantly faster than V1. The test was limited to a maximum algorithm execution duration of 1 second. V1 could only complete a few executions before reaching this limit, whereas V2 was able to handle more executions within the same timeframe.
 
-To analyse both algorithms performance, I created a small benchmark 
+##### Teeth Path
+
+In contrast, for the "teeth" path scenario where the step size is always one and the number of lines is large, the V1 algorithm outperformed V2. This is because the number of commands significantly impacts the time complexity for V2, making the algorithm slower in such cases.
+
+#### Space complexity
+
+The V1 algorithm saves all the visited points in memory. Considering the constraints, the maximum space used could be the maximum number of commands multiplied by the maximum number of steps (10,000 * 100,000), where a tuple of integers is stored to represent each point. Therefore, considering an integer is 4 bytes, the maximum space used for the tuple (int, int) is 8 bytes. This results in a maximum space usage of 8 * 10,000 * 100,000 = 8,000,000,000 bytes or approximately 8 GB.
+
+In contrast, the V2 algorithm uses lines to store visited locations. The maximum number of lines is equal to the maximum number of commands (10,000). Each line is represented by three integers (constant, start, end), resulting in a space usage of 12 bytes per line. Therefore, the maximum space used by the V2 algorithm is 12 * 10,000 = 120,000 bytes or approximately 120 KB.
+
+Thus, the V2 algorithm is significantly more space-efficient compared to the V1 algorithm.
 
 
 ## Setting Up the Project 
@@ -175,8 +181,7 @@ make test-coverage
 
 ## Additional Information
 - **Logs**: The service uses structured logging for better debugging.
-- **Code performance analysis**: run e2e tests locally to check the code time complexity. The test suite plots a graph of commands x execution time. The graph is stored at `app/duration_vs_commands_steps.png`
-
+- **Code performance analysis**: run performance tests locally to check the code time complexity. The test suite plots graphs of steps x execution time. The graphs are stored at `/images` folder
 
 ## Design of the system
 
