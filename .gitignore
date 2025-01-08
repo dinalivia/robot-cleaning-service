@@ -47,8 +47,3 @@ htmlcov/
 *.log
 docker-compose.override.yml
 
-# Matplotlib
-*.png
-
-# Exclude images folder
-!/images/
