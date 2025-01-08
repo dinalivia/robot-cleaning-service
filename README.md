@@ -72,7 +72,7 @@ For a detailed analysis of the solution idealization and code performance, check
 
 4. Install dependencies (if running locally):
    ```bash
-   pip install -r requirements-dev.txt
+   pip install -r requirements.txt
    ```
 
 5. Run the Flask application locally:
