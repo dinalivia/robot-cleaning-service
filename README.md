@@ -44,6 +44,8 @@ To run the service:
        ]
    }'
    ```
+## Design of the system
+The system is designed with a modular approach. The command execution logic, data storage, and API handling are separated into different components for better maintainability and scalability. The database used is PostgreSQL, and the application is built with Flask for the web framework. The command execution algorithms are implemented in separate Python files, ensuring a clear separation of concerns and ease of testing.
 
 ## Algorithm overview
 
@@ -81,7 +83,7 @@ In contrast, the V2 algorithm uses lines to store visited locations. The maximum
 Thus, the V2 algorithm is significantly more space-efficient compared to the V1 algorithm.
 
 
-## Setting Up the Project 
+## Setting Up the Project locally
 
 1. Clone the repository:
    ```bash
@@ -103,54 +105,20 @@ Thus, the V2 algorithm is significantly more space-efficient compared to the V1 
 
 4. Install dependencies (if running locally):
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements-dev.txt
    ```
 
 5. Run the Flask application locally:
    ```bash
    export FLASK_APP=main.py
    export FLASK_ENV=development
-   flask run
+   flask db upgrade && flask run --host=0.0.0.0 --port=5000
    ```
    For Windows:
    ```bash
    set FLASK_APP=main.py
    set FLASK_ENV=development
-   flask run
-   ```
-
-## Managing Dependencies with Poetry
-
-To ensure that dependencies run correctly on another machine, we recommend using [Poetry](https://python-poetry.org/), a simple and lightweight package manager for Python.
-
-1. **Install Poetry**:
-   Follow the instructions on the [Poetry installation page](https://python-poetry.org/docs/#installation) to install Poetry on your system.
-
-2. **Initialize Poetry in the Project**:
-   ```bash
-   poetry init
-   ```
-
-3. **Add Project Dependencies**:
-   ```bash
-   poetry add $(cat requirements.txt)
-   ```
-
-4. **Install Dependencies**:
-   ```bash
-   poetry install
-   ```
-
-5. **Activate the Virtual Environment**:
-   ```bash
-   poetry shell
-   ```
-
-By using Poetry, you can ensure that all dependencies are managed consistently across different environments.
-
-5. Build the Docker containers:
-   ```bash
-   make build
+   flask db upgrade && flask run --host=0.0.0.0 --port=5000
    ```
 
 
@@ -183,9 +151,14 @@ make test-coverage
 
 ## Additional Information
 - **Logs**: The service uses structured logging for better debugging.
+- **CI**: Automated tests are run using GitHub Actions.
 - **Code performance analysis**: run performance tests locally to check the code time complexity. The test suite plots graphs of steps x execution time. The graphs are stored at `/images` folder
 
-## Design of the system
+## Future Expansion
 
-## Future expansion 
-what i'd have done with more time
+- **Dependency Management**: Utilize Poetry or another Python package manager for consistent dependency management. Split production and development dependencies into separate `requirements.txt` files for better environment management.
+- **Cloud Deployment**: Deploy the application on cloud platforms such as AWS for scalability and reliability. Integrate with CI/CD pipelines for automated testing and deployment.
+- **Monitoring and Analysis**: Integrate Datadog for comprehensive service monitoring and analysis. Implement a web-based dashboard for real-time monitoring and control of the cleaning robots.
+- **Algorithm Optimization**: Explore further optimizations for the V2 implementation to enhance performance.
+- **Testing Environment**: Create a separate database instance solely for testing end-to-end and integration tests.
+
