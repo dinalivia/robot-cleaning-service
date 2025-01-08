@@ -1,6 +1,5 @@
 import unittest
-from app.execute_commands import execute_commands_v1
-import matplotlib.pyplot as plt
+from app.execute_commands_v1 import execute_commands_v1
 
 
 class TestExecuteCommands(unittest.TestCase):

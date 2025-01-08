@@ -18,7 +18,7 @@ test:
 	docker exec -it robot-cleaning-service-app bash -c "PYTHONPATH=/ python -m unittest discover -s /app/tests -p '*_test.py'"
 
 unit-test:
-	docker exec -it robot-cleaning-service-app bash -c "PYTHONPATH=/ python tests/execute_commands_test.py tests/enter_path_test.py"
+	python -m unittest app/tests/execute_commands_v1_test.py app/tests/execute_commands_v2_test.py app/tests/enter_path_test.py
 
 integration-test:
 	docker exec -it robot-cleaning-service-app bash -c "PYTHONPATH=/ python tests/db_test.py"
@@ -27,7 +27,7 @@ e2e-test:
 	docker exec -it robot-cleaning-service-app bash -c "PYTHONPATH=/ python tests/e2e_test.py"
 
 performance-test:
-	docker exec -it robot-cleaning-service-app bash -c "PYTHONPATH=/tests/performance_tests python -m unittest performance_test.TestAlgorithmPerformance.test_time_complexity_square" # && python -m unittest performance_test.TestAlgorithmPerformance.test_time_complexity_al_dente && python -m unittest performance_test.TestAlgorithmPerformance.test_time_complexity_realistic_path"
+	python -m unittest app/tests/performance_tests/performance_test.py
 
 test-coverage:
 	docker exec -i robot-cleaning-service-app bash -c "PYTHONPATH=/ coverage run --source=/app -m unittest discover -s /app/tests -p '*_test.py' && coverage report && coverage html"

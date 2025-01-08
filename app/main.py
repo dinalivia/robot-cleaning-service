@@ -2,8 +2,7 @@ from flask import request, jsonify
 from flask_inputs import Inputs
 from flask_inputs.validators import JsonSchema
 from app import create_app, db
-from app.execute_commands import execute_commands_v2
-from app.models import Execution
+from app.execute_commands_v2 import execute_commands_v2
 import logging
 
 from app.db_queries import ExecutionQueryService

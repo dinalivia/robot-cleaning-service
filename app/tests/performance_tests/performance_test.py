@@ -1,5 +1,6 @@
 import unittest
-from app.execute_commands import execute_commands_v2, execute_commands_v1
+from app.execute_commands_v1 import execute_commands_v1
+from app.execute_commands_v2 import execute_commands_v2
 import matplotlib.pyplot as plt
 
 

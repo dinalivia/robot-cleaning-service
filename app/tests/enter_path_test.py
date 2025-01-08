@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from app.main import execute_commands_v2, app
+from app.main import app
+from app.execute_commands_v2 import execute_commands_v2
 from flask import json
 
 
@@ -55,7 +56,10 @@ class TestEnterPathEndpoint(unittest.TestCase):
         self.assertIn("error", data)
         self.assertEqual(data["error"], "Internal server error")
 
-    def test_enter_path_empty_commands(self):
+    @patch("app.db_queries.ExecutionQueryService.add_execution")
+    @patch("app.main.db")
+    def test_enter_path_empty_commands(self, _, mock_execution):
+        mock_execution.return_value = MagicMock(timestamp="2023-01-01T00:00:00Z")
         payload = {"start": {"x": 0, "y": 0}, "commmands": []}
         response = self.app.post(
             "/tibber-developer-test/enter-path",
@@ -66,9 +70,9 @@ class TestEnterPathEndpoint(unittest.TestCase):
         data = json.loads(response.data)
         self.assertEqual(data["result"], 1)  # Only the start position
 
-    @patch("app.main.Execution")
+    @patch("app.db_queries.ExecutionQueryService.add_execution")
     @patch("app.main.db")
-    def test_enter_path_successful(self, mock_db, mock_execution):
+    def test_enter_path_successful(self, _, mock_execution):
         mock_execution.return_value = MagicMock(timestamp="2023-01-01T00:00:00Z")
         payload = {
             "start": {"x": 0, "y": 0},
