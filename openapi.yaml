@@ -9,7 +9,7 @@ servers:
     description: Local development server
 
 paths:
-  /tibber-developer-test/enter-path:
+  /robot-cleaning-service/enter-path:
     post:
       summary: Process robot cleaning commands
       description: Accepts a starting position and a list of movement commands to calculate the number of unique positions visited.

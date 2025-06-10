@@ -27,12 +27,12 @@ To run the service:
 
 3. **Access the API**:
    - API Base URL: `http://localhost:5000`
-   - Example Endpoint: `POST /tibber-developer-test/enter-path`
+   - Example Endpoint: `POST /robot-cleaning-service/enter-path`
 
 . **Send a Sample Request**:
    Use a tool like `curl`, Postman, or any HTTP client to test the service:
    ```bash
-   curl -X POST http://localhost:5000/tibber-developer-test/enter-path \
+   curl -X POST http://localhost:5000/robot-cleaning-service/enter-path \
    -H "Content-Type: application/json" \
    -d '{
        "start": {"x": 0, "y": 0},
@@ -101,13 +101,13 @@ make test
 ### 2. Integration Tests
 Run integration tests only with:
 ```bash
-make integration-tests
+make integration-test
 ```
 
 ### 3. End-to-End Tests
 Run E2E tests only with:
 ```bash
-make e2e-tests
+make e2e-test
 ```
 
 ### 4. Check code coverage

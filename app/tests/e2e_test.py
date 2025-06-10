@@ -2,7 +2,7 @@ import unittest
 import requests
 import time
 
-BASE_URL = "http://localhost:5000/tibber-developer-test/enter-path"
+BASE_URL = "http://localhost:5000/robot-cleaning-service/enter-path"
 
 
 class TestEnterPathE2E(unittest.TestCase):

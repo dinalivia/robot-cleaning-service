@@ -16,7 +16,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
             "commmands": [{"direction": "invalid", "steps": 1}],
         }
         response = self.app.post(
-            "/tibber-developer-test/enter-path",
+            "/robot-cleaning-service/enter-path",
             data=json.dumps(payload),
             content_type="application/json",
         )
@@ -31,7 +31,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
             "commmands": [{"direction": "north", "steps": 1}],
         }
         response = self.app.post(
-            "/tibber-developer-test/enter-path",
+            "/robot-cleaning-service/enter-path",
             data=json.dumps(payload),
             content_type="application/json",
         )
@@ -47,7 +47,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
             "commmands": [{"direction": "north", "steps": 1}],
         }
         response = self.app.post(
-            "/tibber-developer-test/enter-path",
+            "/robot-cleaning-service/enter-path",
             data=json.dumps(payload),
             content_type="application/json",
         )
@@ -62,7 +62,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
         mock_execution.return_value = MagicMock(timestamp="2023-01-01T00:00:00Z")
         payload = {"start": {"x": 0, "y": 0}, "commmands": []}
         response = self.app.post(
-            "/tibber-developer-test/enter-path",
+            "/robot-cleaning-service/enter-path",
             data=json.dumps(payload),
             content_type="application/json",
         )
@@ -82,7 +82,7 @@ class TestEnterPathEndpoint(unittest.TestCase):
             ],
         }
         response = self.app.post(
-            "/tibber-developer-test/enter-path",
+            "/robot-cleaning-service/enter-path",
             data=json.dumps(payload),
             content_type="application/json",
         )

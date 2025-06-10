@@ -19,7 +19,7 @@ def health():
     return jsonify({"status": "healthy"}), 200
 
 
-@app.route("/tibber-developer-test/get-last-executions", methods=["GET"])
+@app.route("/robot-cleaning-service/get-last-executions", methods=["GET"])
 def get_last_executions():
     # for testing purposes
     executions = db_service.get_last_executions()
@@ -36,7 +36,7 @@ def get_last_executions():
     )
 
 
-@app.route("/tibber-developer-test/enter-path", methods=["POST"])
+@app.route("/robot-cleaning-service/enter-path", methods=["POST"])
 def enter_path():
     try:
         inputs = EnterPathInput(request)
